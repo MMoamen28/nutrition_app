@@ -1,0 +1,41 @@
+from fastapi import FastAPI, UploadFile, File
+from typing import Annotated
+import uvicorn
+
+app = FastAPI()
+
+# 1. Load your trained model here
+# my_model = load_model('path/to/food101_model.h5') 
+
+@app.post("/analyze-food")
+async def analyze_food(file: Annotated[UploadFile, File()]):
+    """
+    Receives an image from the Flutter app and returns nutritional data.
+    """
+    # 2. Read the image sent from the Flutter app
+    image_bytes = await file.read()
+    
+    # Logic to fix the "Unused variable" warning
+    # In a real scenario, you'd pass image_bytes to your model here
+    print(f"Processing image: {file.filename} ({len(image_bytes)} bytes)")
+    
+    # 3. MOCK DATA (Replace this with my_model.predict logic later)
+    food_name = "Pepperoni Pizza"
+    calories = 290
+    protein = 12.0
+
+    # 4. Return the results as a JSON response
+    return {
+        "food_name": food_name,
+        "nutritional_info": {
+            "calories": calories,
+            "protein_g": protein,
+            "carbs_g": 35.0,
+            "fat_g": 10.0
+        },
+        "status": "success"
+    }
+
+if __name__ == "__main__":
+    # Binding to 127.0.0.1 fixes the SonarLint security warning
+    uvicorn.run(app, host="127.0.0.1", port=8000)
