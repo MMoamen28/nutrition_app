@@ -66,6 +66,17 @@ async def list_dishes():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# Serve static site from project root so you can run a single server with uvicorn
+try:
+    project_root = Path(__file__).resolve().parent.parent
+    from fastapi.staticfiles import StaticFiles
+    # mount at root; html=True makes index-like files served
+    app.mount("/", StaticFiles(directory=str(project_root), html=True), name="static")
+except Exception:
+    # if StaticFiles isn't available or mount fails, ignore — static files can still be served separately
+    pass
+
 if __name__ == "__main__":
     # Binding to 127.0.0.1 fixes the SonarLint security warning
     uvicorn.run(app, host="127.0.0.1", port=8000)
