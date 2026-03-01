@@ -1,0 +1,17 @@
+/* Global styles (existing site may add more rules here) */
+body { font-family: Arial, Helvetica, sans-serif; line-height:1.5; color:#222; margin:0 }
+header{ background:#2d7a7a; color:#fff; padding:1rem }
+nav ul{ list-style:none; padding:0; margin:0; display:flex; gap:1rem }
+nav a{ color:#fff; text-decoration:none }
+
+/* Dishes cards styles moved from inline */
+.dishes-section { padding: 2rem; background: #f9f9f9; }
+.dishes-controls { display:flex; gap:1rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap }
+.dishes-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1rem }
+.dish-card { background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.08); padding:1rem; display:flex; flex-direction:column; }
+.dish-card h3{ margin:0 0 .5rem 0; font-size:1.1rem }
+.dish-meta { font-size:.9rem; color:#555; margin-bottom:.5rem }
+.ingredients { margin:0; padding:0 0 0 1.2rem; flex:1 }
+.portion { font-weight:600; margin-top:.5rem }
+.filter-select, .search-input { padding:.5rem .6rem; border:1px solid #ddd; border-radius:6px }
+@media (max-width:420px){ .dishes-controls{flex-direction:column;align-items:stretch} }
