@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Web</title>
+    <link rel="stylesheet" href="styles.css">
+</head><body>
+    <header>
+        <h1>Nutrition Web</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section id="home">
+        <h2>Welcome to Nutrition Web</h2>
+        <p>Your go-to source for all things nutrition. We provide expert advice, meal plans, and resources to help you achieve your health goals.</p>
+    </section>
+    <section id="about">
+        <h2>About Us</h2>
+        <p>Nutrition Web was founded by a team of nutritionists and health enthusiasts who are passionate about helping people lead healthier lives. Our mission is to provide accurate and up-to-date information on nutrition and wellness.</p>
+    </section>
+    <section id="services">
+        <h2>Our Services</h2>
+        <ul>
+            <li>Personalized Meal Plans</li>
+            <li>Nutritional Counseling</li>
+            <li>Healthy Recipes</li>
+            <li>Fitness and Wellness Tips</li>
+        </ul>
+    </section>
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <p>If you have any questions or would like to learn more about our services, please feel free to reach out to us.</p>
+        <form action="submit_form.php" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+    <footer>
+        <p>&copy; 2024 Nutrition Web. All rights reserved.</p>
+    </footer>
+</html>
