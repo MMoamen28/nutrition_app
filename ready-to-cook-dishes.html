@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ready to Cook Dishes — Nutrition Web</title>
+  <link rel="stylesheet" href="dishes.css">
+</head>
+<body>
+  <header class="hdr">
+    <div class="brand">Nutrition Web</div>
+    <nav class="nav">
+      <a href="home.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+      <a href="ready-to-cook-dishes.html" class="active">Ready to Cook Dishes</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <h1>Ready to Cook Dishes</h1>
+    <div class="controls">
+      <select id="mealFilter" class="filter-select">
+        <option value="all">All</option>
+        <option value="breakfast">Breakfast</option>
+        <option value="lunch">Lunch</option>
+        <option value="dinner">Dinner</option>
+        <option value="snack">Snack</option>
+        <option value="dessert">Dessert</option>
+      </select>
+      <input id="searchInput" class="search-input" placeholder="Search dishes or ingredients">
+    </div>
+
+    <div id="dishesGrid" class="dishes-grid" aria-live="polite"></div>
+  </main>
+
+  <footer class="ftr">© 2026 Nutrition Web</footer>
+
+  <script>
+    let dishes = [];
+    const grid = document.getElementById('dishesGrid');
+    const mealFilter = document.getElementById('mealFilter');
+    const searchInput = document.getElementById('searchInput');
+
+    // Pagination / load-more
+    const itemsPerPage = 12;
+    let currentPage = 0;
+    let filteredList = [];
+
+    function createCard(d){
+      const card = document.createElement('article'); card.className = 'dish-card';
+      const h = document.createElement('h3'); h.textContent = d.name || 'Untitled';
+      const meta = document.createElement('div'); meta.className='meta'; meta.textContent = (d.meal||'').toUpperCase();
+      const ul = document.createElement('ul'); ul.className='ings'; (d.ingredients||[]).forEach(i=>{const li=document.createElement('li');li.textContent=i;ul.appendChild(li)});
+      const p = document.createElement('div'); p.className='portion'; p.textContent = 'Portion: '+(d.portion||'—');
+      card.appendChild(h); card.appendChild(meta); card.appendChild(ul); card.appendChild(p);
+      return card;
+    }
+
+    function renderPage(append = false){
+      const start = currentPage * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageItems = filteredList.slice(start, end);
+      if(!append) grid.innerHTML = '';
+      if(pageItems.length === 0 && start === 0){ grid.innerHTML = '<p class="no">No dishes found.</p>'; loadMoreBtn.style.display='none'; return }
+      pageItems.forEach(d => grid.appendChild(createCard(d)));
+      if(end >= filteredList.length){ loadMoreBtn.style.display = 'none'; } else { loadMoreBtn.style.display = 'inline-block'; }
+    }
+
+    function applyFilters(){
+      const meal = mealFilter.value; const q = (searchInput.value||'').trim().toLowerCase();
+      filteredList = dishes.filter(d => meal==='all'?true: (d.meal||'')===meal);
+      if(q) filteredList = filteredList.filter(d => (d.name||'').toLowerCase().includes(q) || (d.ingredients||[]).join(' ').toLowerCase().includes(q));
+      currentPage = 0;
+      renderPage(false);
+    }
+
+    mealFilter.addEventListener('change', applyFilters);
+    searchInput.addEventListener('input', applyFilters);
+
+    // load more button
+    const loadMoreBtn = document.createElement('button');
+    loadMoreBtn.textContent = 'Load more';
+    loadMoreBtn.className = 'load-more';
+    loadMoreBtn.style.display = 'none';
+    loadMoreBtn.addEventListener('click', () => { currentPage++; renderPage(true); });
+    grid.parentNode.insertBefore(loadMoreBtn, grid.nextSibling);
+
+    // try to load from backend API first, then local JSON file, then fallback
+    fetch('http://127.0.0.1:8000/dishes').then(r => r.ok ? r.json() : Promise.reject()).then(data => { dishes = data; applyFilters(); }).catch(e => {
+      console.warn('backend fetch failed, attempting local file', e);
+      fetch('data/dishes.json').then(r => r.ok ? r.json() : Promise.reject()).then(data => { dishes = data; applyFilters(); }).catch(err => {
+        console.error('Failed to load any dishes data, using fallback', err);
+        dishes = [{name:'Oatmeal with Banana',meal:'breakfast',portion:'1 bowl',ingredients:['Oats 50g','Milk 200ml','Banana 1 pcs']}];
+        applyFilters();
+      });
+    });
+  </script>
+</body>
+</html>

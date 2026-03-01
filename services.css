@@ -1,0 +1,10 @@
+body{font-family:Inter,Segoe UI,Arial;margin:0;background:linear-gradient(120deg,#fff3e0,#e8f5e9);color:#222}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;background:rgba(255,255,255,0.6)}
+.brand{font-weight:800;color:#2e7d32}
+.nav a{margin-left:1rem;text-decoration:none;color:#333;padding:.3rem .6rem;border-radius:6px}
+.nav a.active{background:rgba(46,125,50,0.12);color:#2e7d32}
+.wrap{max-width:900px;margin:2rem auto;padding:1rem}
+.list{background:#fff;padding:1.2rem;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.06);list-style:none}
+.list li{padding:.6rem 0;border-bottom:1px dashed #eee}
+.list li:last-child{border-bottom:0}
+.ftr{text-align:center;padding:1rem}
