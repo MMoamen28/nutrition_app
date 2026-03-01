@@ -1,8 +1,20 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Annotated
 import uvicorn
+import json
+from pathlib import Path
 
 app = FastAPI()
+
+# Allow cross-origin requests from local file servers or other ports during development
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # 1. Load your trained model here
 # my_model = load_model('path/to/food101_model.h5') 
@@ -35,6 +47,24 @@ async def analyze_food(file: Annotated[UploadFile, File()]):
         },
         "status": "success"
     }
+
+
+@app.get("/dishes")
+async def list_dishes():
+    """
+    Returns the dishes JSON so the website can fetch the Food-101-like list.
+    """
+    # resolve path relative to project root
+    base = Path(__file__).resolve().parent.parent
+    data_path = base / 'data' / 'dishes.json'
+    if not data_path.exists():
+        raise HTTPException(status_code=404, detail="dishes.json not found")
+    try:
+        with data_path.open('r', encoding='utf-8') as f:
+            data = json.load(f)
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     # Binding to 127.0.0.1 fixes the SonarLint security warning
