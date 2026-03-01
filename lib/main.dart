@@ -52,7 +52,7 @@ class _NutritionScreenState extends State<NutritionScreen> {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
-      // Read the image as bytes (this fixes the Web issue you had earlier!)
+  // Read the image as bytes (this fixes the Web issue you had earlier!)
       final bytes = await image.readAsBytes();
 
       setState(() {
