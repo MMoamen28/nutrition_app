@@ -5,19 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nutrition Web</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Dishes cards styles */
-        .dishes-section { padding: 2rem; background: #f9f9f9; }
-        .dishes-controls { display:flex; gap:1rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap }
-        .dishes-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1rem }
-        .dish-card { background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.08); padding:1rem; display:flex; flex-direction:column; }
-        .dish-card h3{ margin:0 0 .5rem 0; font-size:1.1rem }
-        .dish-meta { font-size:.9rem; color:#555; margin-bottom:.5rem }
-        .ingredients { margin:0; padding:0 0 0 1.2rem; flex:1 }
-        .portion { font-weight:600; margin-top:.5rem }
-        .filter-select, .search-input { padding:.5rem .6rem; border:1px solid #ddd; border-radius:6px }
-        @media (max-width:420px){ .dishes-controls{flex-direction:column;align-items:stretch} }
-    </style>
 </head><body>
     <header>
         <h1>Nutrition Web</h1>
@@ -84,13 +71,7 @@
         <p>&copy; 2024 Nutrition Web. All rights reserved.</p>
     </footer>
     <script>
-        // Sample dishes data — expand as needed
-        const dishes = [
-            { name: 'Oatmeal with Banana', meal: 'breakfast', portion: '1 bowl', ingredients: ['Oats 50g', 'Milk 200ml', 'Banana 1 pcs', 'Honey 1 tsp'] },
-            { name: 'Grilled Chicken Salad', meal: 'lunch', portion: '1 plate', ingredients: ['Chicken breast 150g', 'Mixed greens 100g', 'Tomato 1', 'Olive oil 1 tbsp'] },
-            { name: 'Spaghetti Bolognese', meal: 'dinner', portion: '1 plate', ingredients: ['Spaghetti 100g', 'Ground beef 120g', 'Tomato sauce 150g', 'Onion 1'] },
-            { name: 'Yogurt Parfait', meal: 'snack', portion: '1 cup', ingredients: ['Greek yogurt 150g', 'Granola 30g', 'Berries 50g'] }
-        ];
+        let dishes = [];
 
         const grid = document.getElementById('dishesGrid');
         const mealFilter = document.getElementById('mealFilter');
@@ -103,10 +84,10 @@
                 const card = document.createElement('article');
                 card.className = 'dish-card';
                 const title = document.createElement('h3'); title.textContent = d.name;
-                const meta = document.createElement('div'); meta.className = 'dish-meta'; meta.textContent = d.meal.charAt(0).toUpperCase() + d.meal.slice(1);
+                const meta = document.createElement('div'); meta.className = 'dish-meta'; meta.textContent = (d.meal || '').charAt(0).toUpperCase() + (d.meal || '').slice(1);
                 const ul = document.createElement('ul'); ul.className = 'ingredients';
-                d.ingredients.forEach(i => { const li = document.createElement('li'); li.textContent = i; ul.appendChild(li); });
-                const portion = document.createElement('div'); portion.className = 'portion'; portion.textContent = 'Portion: ' + d.portion;
+                (d.ingredients || []).forEach(i => { const li = document.createElement('li'); li.textContent = i; ul.appendChild(li); });
+                const portion = document.createElement('div'); portion.className = 'portion'; portion.textContent = 'Portion: ' + (d.portion || '—');
                 card.appendChild(title); card.appendChild(meta); card.appendChild(ul); card.appendChild(portion);
                 grid.appendChild(card);
             });
@@ -115,15 +96,18 @@
         function applyFilters(){
             const meal = mealFilter.value;
             const q = searchInput.value.trim().toLowerCase();
-            let filtered = dishes.filter(d => meal === 'all' ? true : d.meal === meal);
-            if(q){ filtered = filtered.filter(d => d.name.toLowerCase().includes(q) || d.ingredients.join(' ').toLowerCase().includes(q)); }
+            let filtered = dishes.filter(d => meal === 'all' ? true : (d.meal === meal));
+            if(q){ filtered = filtered.filter(d => (d.name || '').toLowerCase().includes(q) || (d.ingredients || []).join(' ').toLowerCase().includes(q)); }
             renderDishes(filtered);
         }
 
         mealFilter.addEventListener('change', applyFilters);
         searchInput.addEventListener('input', applyFilters);
 
-        // initial render
-        renderDishes(dishes);
+        // load dishes from JSON
+        fetch('data/dishes.json')
+            .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch'))
+            .then(data => { dishes = data; applyFilters(); })
+            .catch(err => { console.error('Failed to load dishes.json', err); renderDishes([]); });
     </script>
 </html>
