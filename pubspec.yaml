@@ -63,7 +63,7 @@ flutter:
 
   assets:
     - assets/images/test_meal.jpg
-    - assets/models/food101_model.tflite
+    - assets/models/grad_ai_model.txt
 
   # To add assets to your application, add an assets section, like this:
   # assets:
