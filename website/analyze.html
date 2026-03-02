@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Analyze Food Image — Nutrition Web</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/ingredients.css">
+</head>
+<body>
+  <header class="hdr">
+    <div class="brand">Nutrition Web</div>
+    <nav class="nav">
+      <a href="home.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+      <a href="ingredient-search.html">Ingredients</a>
+      <a href="analyze.html" class="active">Analyze</a>
+      <a href="ready-to-cook-dishes.html">Ready to Cook Dishes</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <h1>Food Image Analyzer</h1>
+    <p>Upload a photo of your meal and get a prediction and nutritional estimate.</p>
+    <input type="file" id="imageInput" accept="image/*"><br>
+    <button id="uploadBtn">Analyze</button>
+    <div id="analysisResult" class="info"></div>
+  </main>
+
+  <footer class="ftr">© 2026 Nutrition Web</footer>
+
+  <script src="js/site.js" defer></script>
+
+  <script>
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+      const fileEl = document.getElementById('imageInput');
+      if (!fileEl.files.length) return;
+      const form = new FormData();
+      form.append('file', fileEl.files[0]);
+      const resultDiv = document.getElementById('analysisResult');
+      resultDiv.textContent = 'Sending...';
+      try {
+        const resp = await fetch('http://127.0.0.1:8000/analyze-food', {
+          method: 'POST', body: form
+        });
+        const data = await resp.json();
+        resultDiv.innerHTML = `<h3>${data.food_name}</h3>`+
+          `<p>Calories: ${data.nutritional_info.calories}</p>`+
+          `<p>Protein: ${data.nutritional_info.protein_g} g</p>`+
+          `<p>Carbs: ${data.nutritional_info.carbs_g} g</p>`+
+          `<p>Fat: ${data.nutritional_info.fat_g} g</p>`;
+      } catch (e) {
+        resultDiv.textContent = 'Analysis failed: '+e;
+      }
+    });
+  </script>
+</body>
+</html>

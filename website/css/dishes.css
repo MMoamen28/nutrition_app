@@ -1,19 +1,161 @@
-body{font-family:Inter,Segoe UI,Arial;margin:0;background:linear-gradient(180deg,#fff,#f7f9fc)}
-.hdr{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;background:#fff}
-.brand{font-weight:800;color:#e91e63}
-.nav a{margin-left:1rem;text-decoration:none;color:#333;padding:.3rem .6rem;border-radius:6px}
-.nav a.active{background:rgba(233,30,99,0.06);color:#e91e63}
-.wrap{max-width:1100px;margin:2rem auto;padding:1rem}
-.controls{display:flex;gap:1rem;align-items:center;margin-bottom:1rem}
-.filter-select,.search-input{padding:.6rem;border-radius:8px;border:1px solid #ddd}
-.dishes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
-.dish-card{background:linear-gradient(180deg,#fff,#fffef6);padding:1rem;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.06);transition:transform .15s}
-.dish-card:hover{transform:translateY(-6px)}
-.dish-card h3{margin:0 0 .3rem}
-.dish-card .meta{font-size:.8rem;color:#777;margin-bottom:.5rem}
-.ings{margin:0;padding-left:1.1rem;color:#444}
-.portion{margin-top:.6rem;font-weight:600;color:#333}
-.no{text-align:center;color:#777}
-.load-more{display:inline-block;margin:1rem auto;padding:.6rem 1rem;border-radius:8px;border:0;background:#e91e63;color:#fff;cursor:pointer}
+body {
+  font-family: Inter, Segoe UI, Arial;
+  margin: 0;
+  background: #ffffff; /* removed fade gradient for stronger contrast */
+  color: #111111;      /* strong default text color */
+  -webkit-font-smoothing: antialiased; /* crisper text */
+  text-rendering: optimizeLegibility;
+}
 
-@media(max-width:520px){.controls{flex-direction:column;align-items:stretch}}
+/* make headings and cards extra bold for visibility */
+h1, h2, h3, .dish-card h3 {
+  color: #111111;
+  font-weight: 700;
+}
+
+/* ensure form controls and filter text are dark */
+.filter-select,
+.search-input,
+.controls,
+.load-more,
+.nav a {
+  color: #111111 !important;
+}
+
+
+/* Header */
+.hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5; /* clearer separation */
+  color: #111111;
+}
+
+
+.brand {
+  font-weight: 800;
+  color: #e91e63;
+}
+
+/* Navigation */
+.nav a {
+  margin-left: 1rem;
+  text-decoration: none;
+  color: #111111; /* solid black */
+  padding: .3rem .6rem;
+  border-radius: 6px;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+.nav a.active {
+  background: rgba(233,30,99,0.12); /* slightly stronger */
+  color: #c2185b;
+}
+
+/* Main Wrapper */
+.wrap {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filter-select,
+.search-input {
+  padding: .6rem;
+  border-radius: 8px;
+  border: 1px solid #bbb; /* darker border */
+  background: #ffffff;
+  color: #111111; /* strong text */
+  font-weight: 500;
+}
+
+/* Grid */
+.dishes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+/* Cards */
+.dish-card {
+  background: #ffffff; /* removed fade gradient */
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08); /* sharper shadow */
+  transition: transform .15s;
+  border: 1px solid #eee; /* makes card edges clearer */
+}
+
+.dish-card:hover {
+  transform: translateY(-6px);
+}
+
+.dish-card h3 {
+  margin: 0 0 .3rem;
+  color: #111111; /* strong heading */
+}
+
+/* Meta text */
+.dish-card .meta {
+  font-size: .85rem;
+  color: #444444; /* darker gray instead of faded */
+  margin-bottom: .5rem;
+}
+
+/* Ingredients */
+.ings {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: #111111;
+}
+
+/* Portion */
+.portion {
+  margin-top: .6rem;
+  font-weight: 700;
+  color: #222222;
+}
+
+/* No Results */
+.no {
+  text-align: center;
+  color: #222222;
+  font-weight: 500;
+}
+
+/* Load More Button */
+.load-more {
+  display: inline-block;
+  margin: 1rem auto;
+  padding: .6rem 1rem;
+  border-radius: 8px;
+  border: 0;
+  background: #e91e63;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 600;
+}
+.load-more:hover {
+  background: #c2185b;
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

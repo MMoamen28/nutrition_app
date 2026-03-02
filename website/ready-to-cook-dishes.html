@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Ready to Cook Dishes — Nutrition Web</title>
+  <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/dishes.css">
 </head>
 <body>
@@ -14,6 +15,8 @@
       <a href="about.html">About</a>
       <a href="services.html">Services</a>
       <a href="contact.html">Contact</a>
+      <a href="ingredient-search.html">Ingredients</a>
+      <a href="analyze.html">Analyze</a>
       <a href="ready-to-cook-dishes.html" class="active">Ready to Cook Dishes</a>
     </nav>
   </header>
@@ -36,6 +39,8 @@
   </main>
 
   <footer class="ftr">© 2026 Nutrition Web</footer>
+
+  <script src="js/site.js" defer></script>
 
   <script>
     let dishes = [];
@@ -87,15 +92,58 @@
     loadMoreBtn.addEventListener('click', () => { currentPage++; renderPage(true); });
     grid.parentNode.insertBefore(loadMoreBtn, grid.nextSibling);
 
-    // try to load from backend API first, then local JSON file, then fallback
-    fetch('http://127.0.0.1:8000/dishes').then(r => r.ok ? r.json() : Promise.reject()).then(data => { dishes = data; applyFilters(); }).catch(e => {
-      console.warn('backend fetch failed, attempting local file', e);
-      fetch('data/dishes.json').then(r => r.ok ? r.json() : Promise.reject()).then(data => { dishes = data; applyFilters(); }).catch(err => {
-        console.error('Failed to load any dishes data, using fallback', err);
-        dishes = [{name:'Oatmeal with Banana',meal:'breakfast',portion:'1 bowl',ingredients:['Oats 50g','Milk 200ml','Banana 1 pcs']}];
+    // Load dishes data from backend API or local file
+    function loadDishes() {
+      // Try backend API first
+      console.log('Attempting to load from backend API...');
+      fetch('http://127.0.0.1:8000/dishes', { 
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(response => {
+        console.log('Backend response status:', response.status);
+        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        return response.json();
+      })
+      .then(data => {
+        console.log('Successfully loaded from backend:', data.length, 'dishes');
+        dishes = Array.isArray(data) ? data : [];
         applyFilters();
+      })
+      .catch(apiErr => {
+        console.warn('Backend fetch failed:', apiErr.message);
+        console.log('Attempting to load from local JSON file...');
+        
+        // Fallback to local JSON file with absolute path from root
+        fetch('/data/dishes.json', { 
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+          console.log('Local file response status:', response.status);
+          if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          return response.json();
+        })
+        .then(data => {
+          console.log('Successfully loaded from local file:', data.length, 'dishes');
+          dishes = Array.isArray(data) ? data : [];
+          applyFilters();
+        })
+        .catch(fileErr => {
+          console.error('Local file fetch failed:', fileErr.message);
+          console.log('Using fallback data');
+          dishes = [
+            {name:'Oatmeal with Banana',meal:'breakfast',portion:'1 bowl',ingredients:['Oats 50g','Milk 200ml','Banana 1 pcs']},
+            {name:'Apple Pie',meal:'dessert',portion:'1 slice',ingredients:['Apples 200g','All-purpose flour 150g','Butter 80g']},
+            {name:'Bibimbap',meal:'dinner',portion:'1 bowl',ingredients:['Cooked rice 200g','Mixed vegetables 120g','Beef strips 80g']}
+          ];
+          applyFilters();
+        });
       });
-    });
+    }
+    
+    // Load dishes when page is ready
+    loadDishes();
   </script>
 </body>
 </html>

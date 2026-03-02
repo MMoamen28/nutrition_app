@@ -1,17 +1,64 @@
-/* Global styles (existing site may add more rules here) */
-body { font-family: Arial, Helvetica, sans-serif; line-height:1.5; color:#222; margin:0 }
-header{ background:#2d7a7a; color:#fff; padding:1rem }
-nav ul{ list-style:none; padding:0; margin:0; display:flex; gap:1rem }
-nav a{ color:#fff; text-decoration:none }
+:root{
+	--bg-1: #0f1723;
+	--card: rgba(255,255,255,0.03);
+	--muted: #9aa4b2;
+	--accent: #2dd4bf;
+	--accent-2: #60a5fa;
+	--glass: rgba(255,255,255,0.06);
+	--radius: 12px;
+}
 
-/* Dishes cards styles moved from inline */
-.dishes-section { padding: 2rem; background: #f9f9f9; }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif;margin:0;color:#e6eef6;background:linear-gradient(180deg,#071021 0%, #0b1520 60%)}
+
+/* Header / Nav */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:linear-gradient(90deg, rgba(25,35,60,0.8), rgba(15,25,40,0.9));backdrop-filter:blur(8px);box-shadow:0 6px 18px rgba(2,6,23,0.8);border-bottom:1px solid rgba(45,212,191,0.15)}
+.brand{font-weight:800;color:var(--accent);font-size:1.1rem;letter-spacing:0.4px}
+.nav{display:flex;gap:.25rem;align-items:center}
+.nav a{position:relative;color:#d1d9e6;text-decoration:none;padding:.5rem .75rem;border-radius:8px;transition:all .22s ease;font-weight:600}
+.nav a:hover{color:#fff;background:rgba(45,212,191,0.15);transform:translateY(-2px)}
+.nav a.active{color:#fff;background:linear-gradient(90deg, rgba(45,212,191,0.25), rgba(96,165,250,0.2))}
+
+/* Animated underline bar (JS-driven) */
+.nav-underline{position:absolute;left:0;bottom:6px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:3px;transition:all .28s cubic-bezier(.2,.9,.2,1);pointer-events:none}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:.6rem;padding:.6rem 1rem;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#022;cursor:pointer;font-weight:700;box-shadow:0 8px 24px rgba(45,212,191,0.06);transition:transform .18s ease, box-shadow .18s ease}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+
+/* Cards & containers */
+.wrap{max-width:1100px;margin:2rem auto;padding:0 1rem}
+.card{background:linear-gradient(180deg, rgba(25, 35, 60, 0.8), rgba(15, 25, 40, 0.9));padding:1rem;border-radius:var(--radius);box-shadow:0 8px 26px rgba(2,6,23,0.6);border:1px solid rgba(45,212,191,0.2)}
+
+/* Tabs */
+.tabs{display:flex;gap:.6rem;background:transparent;padding:.25rem;border-radius:10px}
+.tab{padding:.6rem .9rem;border-radius:8px;color:#b0b8c8;cursor:pointer;font-weight:700;transition:all .16s;background:rgba(20,30,50,0.5)}
+.tab.active{background:linear-gradient(90deg, rgba(45,212,191,0.35), rgba(96,165,250,0.25));color:#fff}
+.tab-panels{position:relative;min-height:80px}
+.tab-panel{opacity:0;transform:translateY(8px);transition:opacity .28s ease, transform .28s ease;position:absolute;inset:0}
+.tab-panel.active{opacity:1;transform:none;position:relative}
+
+/* Focus styles for keyboard users */
+body.user-tabbed .tab:focus{outline:3px solid rgba(96,165,250,0.22);outline-offset:3px;border-radius:8px}
+.tab:focus{box-shadow:0 6px 18px rgba(96,165,250,0.06);}
+.tabs{position:relative}
+
+
+/* Utilities */
+.info{color:#d1d9e6}
+.ftr{text-align:center;padding:1.2rem;color:var(--muted)}
+
+/* Dishes cards styles */
+.dishes-section { padding: 2rem; background: transparent; }
 .dishes-controls { display:flex; gap:1rem; align-items:center; margin-bottom:1rem; flex-wrap:wrap }
 .dishes-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1rem }
-.dish-card { background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.08); padding:1rem; display:flex; flex-direction:column; }
+.dish-card { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:8px; padding:1rem; display:flex; flex-direction:column; box-shadow:0 10px 30px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.02)}
 .dish-card h3{ margin:0 0 .5rem 0; font-size:1.1rem }
-.dish-meta { font-size:.9rem; color:#555; margin-bottom:.5rem }
+.dish-meta { font-size:.9rem; color:var(--muted); margin-bottom:.5rem }
 .ingredients { margin:0; padding:0 0 0 1.2rem; flex:1 }
 .portion { font-weight:600; margin-top:.5rem }
-.filter-select, .search-input { padding:.5rem .6rem; border:1px solid #ddd; border-radius:6px }
-@media (max-width:420px){ .dishes-controls{flex-direction:column;align-items:stretch} }
+.filter-select, .search-input { padding:.5rem .6rem; border:1px solid rgba(255,255,255,0.04); border-radius:6px; background:transparent; color:#e6eef6 }
+
+@media (max-width:720px){ .nav{gap:.2rem} .hdr{padding:.8rem} }

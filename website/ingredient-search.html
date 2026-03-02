@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ingredient Lookup — Nutrition Web</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/ingredients.css">
+</head>
+<body>
+  <header class="hdr">
+    <div class="brand">Nutrition Web</div>
+    <nav class="nav">
+      <a href="home.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+      <a href="ingredient-search.html" class="active">Ingredients</a>
+      <a href="ready-to-cook-dishes.html">Ready to Cook</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <h1>🥗 Nutrition & Ingredient Finder</h1>
+      <p class="subtitle">Search, discover, convert, and plan your recipes</p>
+    </div>
+
+    <!-- Main Content Card -->
+    <div class="card">
+      <!-- Tab Navigation -->
+      <div class="tabs-container">
+        <div class="tabs" role="tablist" aria-label="Features">
+          <button class="tab active" role="tab" aria-selected="true" aria-controls="panel-search" id="tab-search" tabindex="0">
+            <span class="tab-icon">🔍</span> Search Ingredients
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="panel-recipes" id="tab-recipes" tabindex="-1">
+            <span class="tab-icon">🍳</span> Find Recipes
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="panel-converter" id="tab-converter" tabindex="-1">
+            <span class="tab-icon">⚖️</span> Unit Converter
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content Panels -->
+      <div class="tab-panels">
+        
+        <!-- SEARCH PANEL -->
+        <div id="panel-search" class="tab-panel active" role="tabpanel" aria-labelledby="tab-search">
+          <div class="panel-content">
+            <div class="section-header">
+              <h2>Search Ingredients Database</h2>
+              <p class="section-desc">Find nutritional information for any food item</p>
+            </div>
+
+            <div class="search-block">
+              <div class="search-wrapper">
+                <textarea
+                  id="ingredientInput"
+                  class="search-input"
+                  placeholder="Type an ingredient or recipe name... (e.g., egg, sugar, apple pie)"
+                  rows="3"></textarea>
+                <button id="lookupBtn" class="btn btn-primary">Search</button>
+              </div>
+              <div class="search-suggestions">
+                <p class="hint">You can search any food item or dish from the full Food‑101 dataset – type full names or just part of them.</p>
+                <p class="hint">Popular: Chicken • Egg • Cheese • Apple Pie • Sushi (you can also type "rice" or "berry muffin")</p>
+              </div>
+            </div>
+
+            <div id="ingredientInfo" class="result-panel"></div>
+          </div>
+        </div>
+
+        <!-- RECIPE PANEL -->
+        <div id="panel-recipes" class="tab-panel" role="tabpanel" aria-labelledby="tab-recipes">
+          <div class="panel-content">
+            <div class="section-header">
+              <h2>Recipe Finder by Ingredients</h2>
+              <p class="section-desc">Enter what you have, discover what you can cook</p>
+            </div>
+
+            <div class="recipe-block">
+              <div class="input-group">
+                <label for="inventoryInput" class="input-label">Your Ingredients:</label>
+                <textarea 
+                  id="inventoryInput" 
+                  class="inventory-input" 
+                  placeholder="Enter ingredients separated by commas&#10;Example: eggs, flour, sugar, butter"
+                  rows="4"></textarea>
+              </div>
+
+              <button id="recipesBtn" class="btn btn-primary">🔍 Find Recipes</button>
+
+              <div id="recipeResults" class="result-panel"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONVERTER PANEL -->
+        <div id="panel-converter" class="tab-panel" role="tabpanel" aria-labelledby="tab-converter">
+          <div class="panel-content">
+            <div class="section-header">
+              <h2>Quick Unit Converter</h2>
+              <p class="section-desc">Convert between grams and other measurements</p>
+            </div>
+
+            <div class="converter-block">
+              <div class="converter-instructions">
+                <p>💡 <strong>How to use:</strong> Click any conversion shown in the ingredient details above to load it here.</p>
+              </div>
+              <div id="converterInfo" class="result-panel converter-results"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Quick Reference Section -->
+    <div class="quick-ref">
+      <h3>📊 Quick Nutrition Reference</h3>
+      <div class="nutrition-grid">
+        <div class="ref-card">
+          <span class="ref-label">Protein (g)</span>
+          <p>Chicken: 31g | Egg: 6g | Beef: 26g</p>
+        </div>
+        <div class="ref-card">
+          <span class="ref-label">Carbs (g)</span>
+          <p>Rice: 28g | Bread: 49g | Potato: 17.5g</p>
+        </div>
+        <div class="ref-card">
+          <span class="ref-label">Fat (g)</span>
+          <p>Olive Oil: 100g | Butter: 81g | Nuts: 50g</p>
+        </div>
+        <div class="ref-card">
+          <span class="ref-label">Calories</span>
+          <p>Chicken: 165 | Egg: 78 | Apple: 52</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="ftr">© 2026 Nutrition Web • Powered by Food Database</footer>
+
+  <script src="js/site.js" defer></script>
+  <script>
+    let ingredients = [];
+    let dishes = [];
+    const API_BASE = 'http://127.0.0.1:8000';
+
+    // Initialize on page load
+    window.addEventListener('load', async () => {
+      await loadData();
+      setupEventListeners();
+      setupTabNavigation();
+    });
+
+    async function loadData() {
+      // Load ingredients from expanded database
+      try {
+        console.log('Loading ingredients from /data/ingredients_expanded.json');
+        const resp = await fetch('/data/ingredients_expanded.json', {
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        ingredients = await resp.json();
+        console.log('Successfully loaded', ingredients.length, 'ingredients');
+      } catch (e) {
+        console.warn('Failed to load expanded ingredients:', e.message);
+        // Try alternative path
+        try {
+          const resp = await fetch('data/ingredients_expanded.json');
+          if (resp.ok) ingredients = await resp.json();
+        } catch (e2) {
+          console.warn('Alternative path also failed:', e2.message);
+        }
+      }
+
+      // Load dishes for recipe suggestions
+      try {
+        console.log('Loading dishes from /data/dishes.json');
+        const resp = await fetch('/data/dishes.json', {
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        dishes = await resp.json();
+        console.log('Successfully loaded', dishes.length, 'dishes');
+      } catch (e) {
+        console.warn('Failed to load dishes:', e.message);
+        // Try alternative path
+        try {
+          const resp = await fetch('data/dishes.json');
+          if (resp.ok) dishes = await resp.json();
+        } catch (e2) {
+          console.warn('Alternative path also failed:', e2.message);
+        }
+      }
+
+      // (datalist removed) we no longer need to populate suggestions programmatically.
+      // The textarea above is freeform and will accept any string; matching occurs in search handler.
+    }
+
+    function setupTabNavigation() {
+      const tabs = document.querySelectorAll('.tab');
+      const panels = document.querySelectorAll('.tab-panel');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Remove active from all
+          tabs.forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+            t.tabIndex = -1;
+          });
+          panels.forEach(p => p.classList.remove('active'));
+
+          // Add active to clicked
+          tab.classList.add('active');
+          tab.setAttribute('aria-selected', 'true');
+          tab.tabIndex = 0;
+          const panelId = tab.getAttribute('aria-controls');
+          document.getElementById(panelId).classList.add('active');
+        });
+      });
+
+      // Keyboard navigation
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('keydown', (e) => {
+          let nextIndex = index;
+          if (e.key === 'ArrowRight') {
+            nextIndex = (index + 1) % tabs.length;
+            e.preventDefault();
+          } else if (e.key === 'ArrowLeft') {
+            nextIndex = (index - 1 + tabs.length) % tabs.length;
+            e.preventDefault();
+          }
+          if (nextIndex !== index) tabs[nextIndex].focus();
+        });
+      });
+    }
+
+    function setupEventListeners() {
+      document.getElementById('lookupBtn').addEventListener('click', handleIngredientSearch);
+      document.getElementById('ingredientInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleIngredientSearch();
+      });
+
+      document.getElementById('recipesBtn').addEventListener('click', handleRecipeSearch);
+    }
+
+    function handleIngredientSearch() {
+      const name = document.getElementById('ingredientInput').value.trim();
+      if (!name) {
+        showMessage('ingredientInfo', 'Please enter a term to search');
+        return;
+      }
+
+      const lower = name.toLowerCase();
+
+      // first check if it's a dish request
+      const dish = dishes.find(d => d.name.toLowerCase() === lower || d.name.toLowerCase().includes(lower));
+      if (dish) {
+        displayDish(dish);
+        return;
+      }
+
+      // search ingredient database for any match (substring)
+      const matches = ingredients.filter(i => 
+        i.name.toLowerCase() === lower ||
+        i.name.toLowerCase().includes(lower)
+      );
+
+      if (matches.length === 1) {
+        displayIngredient(matches[0]);
+      } else if (matches.length > 1) {
+        displayIngredientList(matches);
+      } else {
+        showMessage('ingredientInfo', `"${name}" not found. Try another ingredient or dish.`);
+      }
+    }
+
+    function displayIngredient(ing) {
+      const container = document.getElementById('ingredientInfo');
+      if (!ing) {
+        showMessage('ingredientInfo', 'Ingredient not found');
+        return;
+      }
+
+      let html = `<div class="ingredient-card">`;
+      html += `<div class="ingredient-header">
+        <h3>${ing.name}</h3>
+        <p class="portion">Per 100g</p>
+      </div>`;
+
+      // Nutrition table
+      html += `<table class="nutrients">
+        <tr>
+          <th>Calories</th>
+          <th>Protein</th>
+          <th>Carbs</th>
+          <th>Fat</th>
+          <th>Fiber</th>
+        </tr>
+        <tr>
+          <td>${ing.calories || '—'}</td>
+          <td>${ing.protein_g || 0}g</td>
+          <td>${ing.carbs_g || 0}g</td>
+          <td>${ing.fat_g || 0}g</td>
+          <td>${ing.fiber_g || 0}g</td>
+        </tr>
+      </table>`;
+
+      // Conversions
+      if (ing.conversions && ing.conversions.length) {
+        html += `<div class="conversions-section">
+          <h4>📏 Common Conversions (click to convert)</h4>
+          <ul class="conv-list">`;
+        ing.conversions.forEach(c => {
+          html += `<li class="conv-item" data-grams="${c.grams}" data-unit="${c.unit}">${c.unit} = ${c.grams}g</li>`;
+        });
+        html += `</ul></div>`;
+      }
+
+      html += `</div>`;
+      container.innerHTML = html;
+
+      // Attach conversion handlers
+      container.querySelectorAll('.conv-item').forEach(el => {
+        el.addEventListener('click', () => {
+          switchToConverter(el.dataset.grams, el.dataset.unit);
+        });
+      });
+    }
+
+    // if multiple ingredients match, show a selectable list
+    function displayIngredientList(matches) {
+      const container = document.getElementById('ingredientInfo');
+      let html = `<div class="ingredient-card"><h4>Multiple items found, please choose:</h4><ul class="conv-list">`;
+      matches.forEach(m => {
+        html += `<li class="conv-item select-ingredient" data-name="${m.name}">${m.name}</li>`;
+      });
+      html += `</ul></div>`;
+      container.innerHTML = html;
+      container.querySelectorAll('.select-ingredient').forEach(el => {
+        el.addEventListener('click', () => {
+          const nm = el.dataset.name;
+          const ing = ingredients.find(i => i.name === nm);
+          if (ing) displayIngredient(ing);
+        });
+      });
+    }
+
+    // display dish information
+    function displayDish(dish) {
+      const container = document.getElementById('ingredientInfo');
+      if (!dish) {
+        showMessage('ingredientInfo', 'Dish not found');
+        return;
+      }
+
+      let html = `<div class="ingredient-card">`;
+      html += `<div class="ingredient-header">
+        <h3>${dish.name}</h3>
+        <p class="portion">${dish.meal} • ${dish.portion}</p>
+      </div>`;
+
+      html += `<h4>Ingredients</h4><ul class="conv-list">`;
+      dish.ingredients.forEach(i => {
+        html += `<li class="conv-item">${i}</li>`;
+      });
+      html += `</ul>`;
+
+      // attempt to compute simple nutrition summary by matching ingredients
+      const nut = computeDishNutrition(dish);
+      if (nut) {
+        html += `<h4>Estimated Nutrition (per recipe)</h4>`;
+        html += `<table class="nutrients"><tr><th>Calories</th><th>Protein</th><th>Carbs</th><th>Fat</th><th>Fiber</th></tr>`;
+        html += `<tr><td>${nut.calories.toFixed(0)}</td><td>${nut.protein.toFixed(1)}g</td><td>${nut.carbs.toFixed(1)}g</td><td>${nut.fat.toFixed(1)}g</td><td>${nut.fiber.toFixed(1)}g</td></tr></table>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function computeDishNutrition(dish) {
+      const totals = { calories:0, protein:0, carbs:0, fat:0, fiber:0 };
+      dish.ingredients.forEach(i => {
+        // try to extract the first word as food name
+        const parts = i.split(' ');
+        const name = parts[0].toLowerCase();
+        const ing = ingredients.find(x => x.name.toLowerCase().startsWith(name));
+        if (ing) {
+          totals.calories += ing.calories || 0;
+          totals.protein += ing.protein_g || 0;
+          totals.carbs += ing.carbs_g || 0;
+          totals.fat += ing.fat_g || 0;
+          totals.fiber += ing.fiber_g || 0;
+        }
+      });
+      // return only if any positive
+      return (totals.calories||totals.protein||totals.carbs||totals.fat||totals.fiber) ? totals : null;
+    }
+
+    function switchToConverter(grams, unit) {
+      const tab = document.getElementById('tab-converter');
+      tab.click(); // Switch to converter tab
+      createConverterForm(grams, unit);
+    }
+
+    function createConverterForm(grams, unit) {
+      const container = document.getElementById('converterInfo');
+      const form = document.createElement('div');
+      form.className = 'converter-form';
+      form.innerHTML = `
+        <div class="converter-pair">
+          <div class="input-group">
+            <label for="convGrams">Grams</label>
+            <input type="number" id="convGrams" value="${grams}" step="0.1" class="conv-input">
+          </div>
+          <div class="converter-equals">=</div>
+          <div class="input-group">
+            <label for="convUnits">${unit}</label>
+            <input type="number" id="convUnits" value="1" step="0.1" class="conv-input">
+          </div>
+        </div>
+      `;
+      container.innerHTML = '';
+      container.appendChild(form);
+
+      const gramsInput = container.querySelector('#convGrams');
+      const unitsInput = container.querySelector('#convUnits');
+      const ratio = parseFloat(grams);
+
+      gramsInput.addEventListener('input', () => {
+        const val = parseFloat(gramsInput.value) || 0;
+        unitsInput.value = (val / ratio).toFixed(3);
+      });
+
+      unitsInput.addEventListener('input', () => {
+        const val = parseFloat(unitsInput.value) || 0;
+        gramsInput.value = (val * ratio).toFixed(1);
+      });
+    }
+
+    function handleRecipeSearch() {
+      const raw = document.getElementById('inventoryInput').value;
+      const itemList = raw.split(',').map(i => i.trim().toLowerCase()).filter(i => i);
+
+      if (itemList.length === 0) {
+        showMessage('recipeResults', 'Please enter at least one ingredient');
+        return;
+      }
+
+      const matches = dishes.filter(dish => {
+        return dish.ingredients.every(ing => {
+          const ingBase = ing.replace(/[0-9]/g, '').trim().toLowerCase();
+          return itemList.some(item => ingBase.includes(item) || item.includes(ingBase.split(' ')[0]));
+        });
+      });
+
+      const container = document.getElementById('recipeResults');
+      if (matches.length > 0) {
+        let html = `<div class="recipes-found">
+          <p class="result-count">Found <strong>${matches.length}</strong> recipe${matches.length !== 1 ? 's' : ''}:</p>
+          <ul class="recipe-list">`;
+        matches.forEach(m => {
+          html += `<li class="recipe-item">
+            <span class="recipe-name">${m.name}</span>
+            <span class="recipe-meta">${m.meal} • ${m.portion}</span>
+          </li>`;
+        });
+        html += `</ul></div>`;
+        container.innerHTML = html;
+      } else {
+        showMessage('recipeResults', 'No recipes found with those ingredients. Try different items!');
+      }
+    }
+
+    function showMessage(elementId, message) {
+      document.getElementById(elementId).innerHTML = `<div class="message-box">${message}</div>`;
+    }
+  </script>
+</body>
+</html>

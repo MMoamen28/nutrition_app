@@ -1,0 +1,53 @@
+[
+  {
+    "name": "Egg",
+    "calories": 78,
+    "protein_g": 6.0,
+    "carbs_g": 0.6,
+    "fat_g": 5.0,
+    "fiber_g": 0.0,
+    "conversions": [
+      { "unit": "large (1)", "grams": 50 },
+      { "unit": "medium (1)", "grams": 45 },
+      { "unit": "cup beaten", "grams": 243 }
+    ]
+  },
+  {
+    "name": "All-purpose flour",
+    "calories": 364,
+    "protein_g": 13.0,
+    "carbs_g": 76.0,
+    "fat_g": 1.0,
+    "fiber_g": 3.0,
+    "conversions": [
+      { "unit": "cup", "grams": 120 },
+      { "unit": "tablespoon", "grams": 8 },
+      { "unit": "gram", "grams": 1 }
+    ]
+  },
+  {
+    "name": "Sugar",
+    "calories": 387,
+    "protein_g": 0.0,
+    "carbs_g": 100.0,
+    "fat_g": 0.0,
+    "fiber_g": 0.0,
+    "conversions": [
+      { "unit": "cup", "grams": 200 },
+      { "unit": "tablespoon", "grams": 12 },
+      { "unit": "teaspoon", "grams": 4 }
+    ]
+  },
+  {
+    "name": "Butter",
+    "calories": 717,
+    "protein_g": 0.5,
+    "carbs_g": 0.1,
+    "fat_g": 81.0,
+    "fiber_g": 0.0,
+    "conversions": [
+      { "unit": "tablespoon", "grams": 14 },
+      { "unit": "cup", "grams": 227 }
+    ]
+  }
+]

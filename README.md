@@ -41,6 +41,19 @@ python -m uvicorn nutrition_backend.main:app --host 127.0.0.1 --port 8000
 - Dishes page: http://127.0.0.1:8000/ready-to-cook-dishes.html
 - API test: http://127.0.0.1:8000/dishes
 
+## New features added to the website
+
+The static site now includes several useful tools beyond the original dishes list:
+
+* **Ingredient Lookup** — browse `ingredient-search.html` or use `/ingredients` and `/ingredient/{name}` APIs.  A JSON file (`website/data/ingredients.json`) holds nutrition values, fibre/protein/etc, plus unit conversions.  Each ingredient page also shows which dishes it appears in.
+* **Recipe suggestions** — enter a comma‑separated inventory on the ingredient page to get a list of dishes you can make with those items (`/recipes?have=eggs,flour,sugar`).
+* **Image Analyzer** — `analyze.html` lets you upload a photo to `/analyze-food` (mocked) and returns a predicted food name with calories/protein/carbs/fat.
+
+Both the frontend and backend have been extended; see `nutrition_backend/main.py` for additional endpoints and `website/ingredient-search.html` / `website/analyze.html` for sample UI.
+
+*Note*: the ingredient dataset is minimal; feel free to expand `ingredients.json` with actual values or parse your own folder of nutrient data.  The API and UI will adapt automatically.
+
+
 Run with custom port (e.g. 8080) and a watchdog (auto-restart) from the helper script:
 
 ```powershell
