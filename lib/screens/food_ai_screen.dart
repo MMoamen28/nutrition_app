@@ -30,10 +30,12 @@ class _FoodAiScreenState extends State<FoodAiScreen> {
     final bytes = File(file.path).readAsBytesSync();
     final image = img.decodeImage(bytes)!;
 
-    final food = classifier.predict(image);
+    final foodName = classifier.predict(image);
+
+    debugPrint('Detected food name: $foodName');
 
     setState(() {
-      result = food;
+      result = foodName;
     });
   }
 
@@ -44,7 +46,7 @@ class _FoodAiScreenState extends State<FoodAiScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(result, style: const TextStyle(fontSize: 22)),
+          Text("Detected Food: $result", style: const TextStyle(fontSize: 22)),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: pickImage,

@@ -25,6 +25,8 @@ class FoodClassifier {
         .map((e) => e.trim())
         .where((e) => e.isNotEmpty)
         .toList();
+
+    debugPrint('Labels loaded: ${labels.length} labels');
   }
 
   /// Predict the food name from an image
@@ -37,12 +39,21 @@ class FoodClassifier {
     _interpreter.run(input, output);
 
     final scores = output[0] as List<double>;
+    int highestIndex = 0;
+    double maxScore = scores[0];
 
-    // Get index with highest probability
-    int maxIndex = scores.indexOf(scores.reduce((a, b) => a > b ? a : b));
+    for (int i = 1; i < scores.length; i++) {
+      if (scores[i] > maxScore) {
+        maxScore = scores[i];
+        highestIndex = i;
+      }
+    }
 
-    // Return the food name from labels
-    return labels[maxIndex];
+    debugPrint('Predicted class index: $highestIndex');
+    debugPrint('Predicted food name: ${labels[highestIndex]}');
+
+    // Return the food name using the labels list
+    return labels[highestIndex];
   }
 
   /// Preprocess image into Float32List for TFLite input

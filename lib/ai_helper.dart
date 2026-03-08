@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:image/image.dart' as img;
+import 'package:flutter/services.dart';
 
 class AIModelHelper {
   Interpreter? _interpreter;
+  late List<String> labels;
 
   // 1. Load the model from your assets
   Future<void> loadModel() async {
@@ -12,6 +14,20 @@ class AIModelHelper {
       _interpreter = await Interpreter.fromAsset(
         'assets/models/food101_model.tflite',
       );
+      
+      // Load labels from grad_ai_model.txt
+      final labelData = await rootBundle.loadString(
+        'assets/models/grad_ai_model.txt',
+      );
+      
+      // Split by line, trim whitespace, remove empty lines
+      labels = labelData
+          .split('\n')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+      
+      debugPrint('Model loaded with ${labels.length} food classes');
     } catch (e) {
       // Using a log or debug message instead of a raw print for production standards
       debugPrint('Failed to load model: $e');
@@ -21,6 +37,7 @@ class AIModelHelper {
   // 2. Analyze the uploaded photo
   Future<Map<String, dynamic>> analyzeFood(Uint8List imageBytes) async {
     if (_interpreter == null) return {"error": "Model not loaded yet"};
+    if (labels.isEmpty) return {"error": "Labels not loaded yet"};
 
     // 3. Resize the image (224x224 is standard for Food101)
     img.Image? originalImage = img.decodeImage(imageBytes);
@@ -71,9 +88,12 @@ class AIModelHelper {
       }
     }
 
-    // Fixed interpolation warning here!
+    // Return the food name from labels list instead of class number
+    String foodName = highestIndex < labels.length ? labels[highestIndex] : "Unknown Food";
+    debugPrint('Detected food: $foodName with confidence ${(maxProb * 100).toStringAsFixed(1)}%');
+    
     return {
-      "food_name": "Food Class #$highestIndex",
+      "food_name": foodName,
       "confidence": "${(maxProb * 100).toStringAsFixed(1)}%",
     };
   }
