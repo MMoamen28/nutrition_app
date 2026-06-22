@@ -1,0 +1,32 @@
+name: nutrition_app
+description: "NutriTrack - AI-powered nutrition and fitness app"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  image_picker: ^1.1.2
+  tflite_flutter: ^0.12.1
+  image: ^4.1.7
+  http: ^1.2.0
+  shared_preferences: ^2.3.2
+  video_player: ^2.8.6
+  fl_chart: ^0.68.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/test_meal.jpg
+    - assets/models/food101_model.tflite
+    - assets/models/grad_ai_model.txt
+    - assets/exercises/
