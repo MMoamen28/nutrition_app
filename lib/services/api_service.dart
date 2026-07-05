@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   // Change this to your computer's IP when testing on a real phone.
   // Use 10.0.2.2 for Android emulator, localhost for iOS simulator.
-  static const String _base = 'https://nutrition-app-vnve.onrender.com/api';
+  static const String _base = 'http://10.0.2.2:3000/api';
 
   static Map<String, String> get _headers =>
       {'Content-Type': 'application/json'};
