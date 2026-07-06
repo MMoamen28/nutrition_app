@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Required for all network requests (backend API, AI chat) -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <!-- Camera & storage permissions for food scanning -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>

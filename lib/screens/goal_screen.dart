@@ -72,7 +72,7 @@ class _GoalScreenState extends State<GoalScreen> {
         title: const Text('Your Goal', style: TextStyle(color: Colors.white)),
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +103,7 @@ class _GoalScreenState extends State<GoalScreen> {
                 bullets: ['Progressive overload lifting', 'Calorie surplus nutrition plan', 'High protein intake'],
               ),
 
-              const Spacer(),
+              const SizedBox(height: 24),
               if (_error != null)
                 Container(
                   margin: const EdgeInsets.only(bottom: 16),
