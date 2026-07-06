@@ -22,9 +22,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<ChatMessage> _msgs = [];
   bool _loading = false;
 
-  static const _apiKey = 'AIzaSyA74CeCYU0ACKxran9RDeijrhjK9rBG-qI';
-  static const _model = 'gemini-2.0-flash';
-  static const _base = 'https://generativelanguage.googleapis.com/v1beta/models';
+  static const _apiKey = 'AQ.Ab8RN6LD0dOFfnypJYXtuC0bre2ATwDwdoi7XI-ASI0XzwEvoQ';
+  static const _model = 'gemini-2.5-flash';
+  static const _base = 'https://generativelanguage.googleapis.com/v1/models';
 
   final _suggestions = const [
     {'t': 'What should I eat before workout?', 'i': '🏋️'},
